@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export default gql`
-query AllCity {
-    allCity  {
+query GetCities {
+  getCities  {
       cities {
         name
         country

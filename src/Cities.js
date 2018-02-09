@@ -6,7 +6,7 @@ import {
   Image,
   ScrollView
 } from 'react-native'
-import AllCities from './queries/AllCities'
+import GetCities from './queries/GetCities'
 import NewCitiesSubscription from './subscriptions/NewCitySubscription';
 import { compose, graphql } from 'react-apollo'
 import { ListItem } from 'react-native-elements'
@@ -66,20 +66,20 @@ class Cities extends React.Component {
 }
 
 const CitiesWithData = compose(
-  graphql(AllCities, {
+  graphql(GetCities, {
       options: {
         fetchPolicy: 'cache-and-network'
       },
       props: (props) => {
         return {
-          cities: props.data.allCity ? props.data.allCity.cities : [],
+          cities: props.data.getCities ? props.data.getCities.cities : [],
           subscribeToNewCities: params => {
             props.data.subscribeToMore({
                 document: NewCitiesSubscription,
                 updateQuery: (prev, { subscriptionData: { data : { putCity } } }) => {
                   return {
                     ...prev,
-                    allCity: { __typename: 'City', cities: [putCity, ...prev.allCity.cities.filter(city => city.id !== putCity.id)]}
+                    getCities: { __typename: 'City', cities: [putCity, ...prev.getCities.cities.filter(city => city.id !== putCity.id)]}
                 }
               }
             });
