@@ -13,6 +13,7 @@ import uuidV4 from 'uuid/v4'
 
 import AddLocation from './mutations/AddLocation'
 import GetLocations from './queries/GetLocations'
+import NewLocationSubscription from './subscriptions/NewLocationSubscription'
 import Input from './Input'
 
 const initialState = {
@@ -29,6 +30,9 @@ class City extends React.Component {
     }
   }
   state = initialState
+  componentWillMount(){
+    this.props.subscribeToNewLocations()
+  }
   toggleModal() {
     this.setState(state => ({ modalVisible: !state.modalVisible }))
   }
@@ -53,9 +57,9 @@ class City extends React.Component {
       <View style={styles.container}>
         {
           locations.map((location, index) => (
-            <View>
-              <Text>{location.name}</Text>
-              <Text>{location.info}</Text>
+            <View key={index} style={styles.location}>
+              <Text style={styles.title}>{location.name}</Text>
+              <Text style={styles.subtitle}>{location.info}</Text>
             </View>
           ))
         }
@@ -106,6 +110,18 @@ class City extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  location: {
+    padding: 13,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, .1)'
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '300'
+  },
+  subtitle: {
+    fontSize: 14,
+  },
   container: {
     backgroundColor: 'white',
     flex: 1
@@ -139,8 +155,20 @@ export default compose(
         variables: { cityId: id }
       }
     },
-    props: props => ({
-      locations: props.data.getLocations ? props.data.getLocations.locations : []
-    })
+    props: props => {
+      console.log('props from subscriptoin: ', props)
+      return {
+        locations: props.data.getLocations ? props.data.getLocations.locations : [],
+        subscribeToNewLocations: params => {
+          props.data.subscribeToMore({
+              document: NewLocationSubscription,
+              updateQuery: (prev, { subscriptionData: { data : { putLocation } } }) => ({
+                ...prev,
+                getLocations: { __typename: 'Location', locations: [putLocation, ...prev.getLocations.locations.filter(location => location.id !== putLocation.id)]}
+            })
+          });
+        }
+      }
+    }
 })
 )(City)

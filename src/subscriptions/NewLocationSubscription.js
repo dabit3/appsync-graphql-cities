@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 
 export default gql`
-subscription newLocationSub {
+subscription NewLocationSub {
   putLocation {
     id
 		cityId

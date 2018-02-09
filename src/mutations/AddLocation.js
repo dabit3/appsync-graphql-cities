@@ -9,6 +9,9 @@ export default gql`
       id: $id
     ) {
       cityId
+      name
+      info
+      id
     }
   }
 `

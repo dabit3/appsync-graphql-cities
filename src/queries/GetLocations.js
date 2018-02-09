@@ -6,6 +6,8 @@ query getLocations($cityId: ID!) {
       locations {
         name
         info
+        id
+        cityId
       }
     }
 }`;
