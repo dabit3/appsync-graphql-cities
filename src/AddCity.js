@@ -13,12 +13,15 @@ import uuidV4 from 'uuid/v4'
 import { compose, graphql } from 'react-apollo'
 import Cities from './Cities'
 import AddCityMutation from './mutations/AddCity'
+import AllCity from './queries/AllCity'
+
+const initialState = {
+  name: '',
+  country: ''
+}
 
 class AddCity extends Component {
-  state = {
-    name: '',
-    country: ''
-  }
+  state = initialState
 
   onChangeText(key, value) {
     this.setState({
@@ -31,19 +34,21 @@ class AddCity extends Component {
       ...this.state,
       id: uuidV4()
     })
+    this.props.navigation.navigate('Cities')
+    this.setState(initialState)
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Input
-          onChangeText={this.onChangeText}
+          onChangeText={this.onChangeText.bind(this)}
           placeholder='Name'
           type='name'
           value={this.state.name}
         />
         <Input
-          onChangeText={this.onChangeText}
+          onChangeText={this.onChangeText.bind(this)}
           placeholder='Country'
           type='country'
           value={this.state.country}
@@ -60,10 +65,19 @@ class AddCity extends Component {
 export default compose(
   graphql(AddCityMutation, {
     props: props => ({
-      onAdd: city => props.mutate({
-        variables: city,
-        optimisticResponse: () => ({ putCity: { ...city, __typename: 'City' } }),
-      })
+      onAdd: city => {
+        return props.mutate({
+          variables: city,
+          optimisticResponse: data => ({
+            putCity: { ...city,  __typename: 'Event' }
+          }),
+          update: (proxy, { data: { putCity } }) => {
+            const data = proxy.readQuery({ query: AllCity });
+            data.allCity.unshift(putCity);
+            proxy.writeQuery({ query: AllCity, data });
+          },
+        })
+      }
     })
   })
 )(AddCity)

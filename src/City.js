@@ -12,7 +12,7 @@ import { compose, graphql } from 'react-apollo'
 import uuidV4 from 'uuid/v4'
 
 import AddLocation from './mutations/AddLocation'
-import GetLocations from './queries/GetLocations'
+import AllLocation from './queries/AllLocation'
 import NewLocationSubscription from './subscriptions/NewLocationSubscription'
 import Input from './Input'
 
@@ -102,6 +102,10 @@ class City extends React.Component {
               onPress={this.addLocation.bind(this)}
               title={`Add Location to ${this.props.navigation.state.params.city.name}`}
             />
+            <Button
+              onPress={this.toggleModal.bind(this)}
+              title="Close"
+            />
           </View>
         </Modal>
       </View>
@@ -143,29 +147,36 @@ export default compose(
     props: props => ({
       onAdd: location => props.mutate({
         variables: location,
-        optimisticResponse: () => ({ putLocation: { ...location, __typename: 'Location' } }),
+        optimisticResponse: data => ({
+          putLocation: { ...location,  __typename: 'Location' }
+        }),
+        update: (proxy, { data: { putLocation } }) => {
+          const data = proxy.readQuery({ query: AllLocation, variables: { cityId: putLocation.cityId } });
+          data.allLocation.push(putLocation);
+          proxy.writeQuery({ query: AllLocation, data });
+        }
       })
     })
   }),
-  graphql(GetLocations, {
+  graphql(AllLocation, {
     options: props => {
       const { id } = props.navigation.state.params.city
       return {
-        fetchPolicy: 'cache-and-network',
         variables: { cityId: id }
       }
     },
     props: props => {
-      console.log('props from subscriptoin: ', props)
       return {
-        locations: props.data.getLocations ? props.data.getLocations.locations : [],
+        locations: props.data.allLocation ? props.data.allLocation : [],
         subscribeToNewLocations: params => {
           props.data.subscribeToMore({
               document: NewLocationSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { putLocation } } }) => ({
-                ...prev,
-                getLocations: { __typename: 'Location', locations: [putLocation, ...prev.getLocations.locations.filter(location => location.id !== putLocation.id)]}
-            })
+              updateQuery: (prev, { subscriptionData: { data : { putLocation } } }) => {
+                return {
+                  ...prev,
+                  allLocation: [putLocation, ...prev.allLocation.filter(location => location.id !== putLocation.id)]
+              }
+            }
           });
         }
       }
