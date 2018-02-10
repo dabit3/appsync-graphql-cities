@@ -102,10 +102,6 @@ class City extends React.Component {
               onPress={this.addLocation.bind(this)}
               title={`Add Location to ${this.props.navigation.state.params.city.name}`}
             />
-            <Button
-              onPress={this.toggleModal.bind(this)}
-              title="Close"
-            />
           </View>
         </Modal>
       </View>
@@ -153,7 +149,7 @@ export default compose(
         update: (proxy, { data: { putLocation } }) => {
           const data = proxy.readQuery({ query: AllLocation, variables: { cityId: putLocation.cityId } });
           data.allLocation.push(putLocation);
-          proxy.writeQuery({ query: AllLocation, data });
+          proxy.writeQuery({ query: AllLocation, data, variables: { cityId: putLocation.cityId } });
         }
       })
     })
@@ -162,7 +158,8 @@ export default compose(
     options: props => {
       const { id } = props.navigation.state.params.city
       return {
-        variables: { cityId: id }
+        variables: { cityId: id },
+        fetchPolicy: 'cache-and-network'
       }
     },
     props: props => {
