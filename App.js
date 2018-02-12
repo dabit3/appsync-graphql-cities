@@ -4,7 +4,6 @@ import Tabs from './src/Tabs'
 import AWSAppSyncClient from "aws-appsync";
 import { Rehydrated } from 'aws-appsync-react';
 import { ApolloProvider } from 'react-apollo';
-import * as AWS from 'aws-sdk';
 
 import appSyncConfig from './aws-exports';
 
