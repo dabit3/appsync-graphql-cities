@@ -148,7 +148,7 @@ export default compose(
         }),
         update: (proxy, { data: { putLocation } }) => {
           const data = proxy.readQuery({ query: AllLocation, variables: { cityId: putLocation.cityId } });
-          data.allLocation.push(putLocation);
+          data.allLocation.unshift(putLocation);
           proxy.writeQuery({ query: AllLocation, data, variables: { cityId: putLocation.cityId } });
         }
       })
