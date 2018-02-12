@@ -11,7 +11,6 @@ import Input from './Input'
 
 import uuidV4 from 'uuid/v4'
 import { compose, graphql } from 'react-apollo'
-import Cities from './Cities'
 import AddCityMutation from './mutations/AddCity'
 import AllCity from './queries/AllCity'
 
@@ -65,19 +64,17 @@ class AddCity extends Component {
 export default compose(
   graphql(AddCityMutation, {
     props: props => ({
-      onAdd: city => {
-        return props.mutate({
-          variables: city,
-          optimisticResponse: data => ({
-            putCity: { ...city,  __typename: 'Event' }
-          }),
-          update: (proxy, { data: { putCity } }) => {
-            const data = proxy.readQuery({ query: AllCity });
-            data.allCity.unshift(putCity);
-            proxy.writeQuery({ query: AllCity, data });
-          }
-        })
-      }
+      onAdd: city => props.mutate({
+        variables: city,
+        optimisticResponse: data => ({
+          putCity: { ...city,  __typename: 'Event' }
+        }),
+        update: (proxy, { data: { putCity } }) => {
+          const data = proxy.readQuery({ query: AllCity });
+          data.allCity.unshift(putCity);
+          proxy.writeQuery({ query: AllCity, data });
+        }
+      })
     })
   })
 )(AddCity)
