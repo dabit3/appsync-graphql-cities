@@ -6,31 +6,22 @@ import { Rehydrated } from 'aws-appsync-react';
 import { ApolloProvider } from 'react-apollo';
 import * as AWS from 'aws-sdk';
 
-import awsconfig from './aws-exports';
-
-AWS.config.update({
-  region: awsconfig.region,
-  credentials: new AWS.Credentials({
-      accessKeyId: awsconfig.accessKeyId,
-      secretAccessKey: awsconfig.secretAccessKey
-  })
-});
+import appSyncConfig from './aws-exports';
 
 const client = new AWSAppSyncClient({
-  disableOffline: true,
-  url: awsconfig.graphqlEndpoint,
-  region: AWS.config.region,
+  url: appSyncConfig.graphqlEndpoint,
+  region: appSyncConfig.region,
   auth: {
-    type: "API_KEY",
-    apiKey: awsconfig.apiKey,
+    type: appSyncConfig.authType,
+    apiKey: appSyncConfig.apiKey,
   }
 });
 
 const WithProvider = () => (
   <ApolloProvider client={client}>
-      <Rehydrated>
-          <Tabs />
-      </Rehydrated>
+    <Rehydrated>
+      <Tabs />
+    </Rehydrated>
   </ApolloProvider>
 );
 

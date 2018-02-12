@@ -75,7 +75,7 @@ export default compose(
             const data = proxy.readQuery({ query: AllCity });
             data.allCity.unshift(putCity);
             proxy.writeQuery({ query: AllCity, data });
-          },
+          }
         })
       }
     })
