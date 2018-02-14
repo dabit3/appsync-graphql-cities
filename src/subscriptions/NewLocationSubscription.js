@@ -4,8 +4,8 @@ export default gql`
 subscription NewLocationSub {
   putLocation {
     id
-		cityId
-		name
-		info
+    cityId
+    name
+    info
   }
 }`;
