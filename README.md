@@ -9,7 +9,7 @@ This app demonstrates how to integrate React Native with AppSync using GraphQL a
 1. clone project    
 
 ```
-git clone git@github.com:dabit3/appsync-graphql-cities.git
+git clone https://github.com/dabit3/appsync-graphql-cities.git
 ```
 
 2. change into directory and install dependencies    
