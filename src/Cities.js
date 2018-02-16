@@ -6,7 +6,7 @@ import {
   Image,
   ScrollView
 } from 'react-native'
-import AllCity from './queries/AllCity'
+import ListCities from './queries/ListCities'
 import NewCitiesSubscription from './subscriptions/NewCitySubscription';
 import { compose, graphql } from 'react-apollo'
 import { ListItem } from 'react-native-elements'
@@ -38,7 +38,7 @@ class Cities extends React.Component {
     )
   }
   componentWillMount(){
-    this.props.subscribeToNewCities();
+    // this.props.subscribeToNewCities();
   }
   navigate(city) {
     this.props.navigation.navigate('City', { city })
@@ -66,21 +66,26 @@ class Cities extends React.Component {
 }
 
 const CitiesWithData = compose(
-  graphql(AllCity, {
-      props: (props) => ({
-        cities: props.data.allCity ? props.data.allCity : [],
-        subscribeToNewCities: params => {
-          props.data.subscribeToMore({
-              document: NewCitiesSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { putCity } } }) => {
-                return {
-                  ...prev,
-                  allCity: [putCity, ...prev.allCity.filter(city => city.id !== putCity.id)]
+  graphql(ListCities, {
+      options: {
+        fetchPolicy: 'cache-and-network'
+      },
+      props: (props) => {
+        return {
+          cities: props.data.listCities ? props.data.listCities.items : [],
+          subscribeToNewCities: params => {
+            props.data.subscribeToMore({
+                document: NewCitiesSubscription,
+                updateQuery: (prev, { subscriptionData: { data : { putCity } } }) => {
+                  return {
+                    ...prev,
+                    listCities: [putCity, ...prev.listCities.items.filter(city => city.id !== putCity.id)]
+                }
               }
-            }
-          });
+            });
+          }
         }
-      })
+      }
   })
 )(Cities)
 

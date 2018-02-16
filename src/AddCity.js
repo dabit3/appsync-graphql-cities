@@ -12,7 +12,7 @@ import Input from './Input'
 import uuidV4 from 'uuid/v4'
 import { compose, graphql } from 'react-apollo'
 import AddCityMutation from './mutations/AddCity'
-import AllCity from './queries/AllCity'
+import ListCities from './queries/ListCities'
 
 const initialState = {
   name: '',
@@ -67,12 +67,13 @@ export default compose(
       onAdd: city => props.mutate({
         variables: city,
         optimisticResponse: data => ({
-          putCity: { ...city,  __typename: 'Event' }
+          createCity: { ...city,  __typename: 'Event' }
         }),
-        update: (proxy, { data: { putCity } }) => {
-          const data = proxy.readQuery({ query: AllCity });
-          data.allCity.unshift(putCity);
-          proxy.writeQuery({ query: AllCity, data });
+        update: (proxy, { data: { createCity } }) => {
+          const data = proxy.readQuery({ query: ListCities });
+          console.log('data:' , data)
+          data.listCities.items.unshift(createCity);
+          proxy.writeQuery({ query: ListCities, data });
         }
       })
     })
