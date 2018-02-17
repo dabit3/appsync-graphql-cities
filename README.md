@@ -1,6 +1,6 @@
 # React Native and AppSync - Demo Travel App
 
-This app demonstrates how to integrate React Native with AppSync using GraphQL and real time subscriptions.
+This app demonstrates how to integrate React Native & GraphQL using AppSync with optimistic UI and real time subscriptions.
 
 ![React Native AppSync](https://i.imgur.com/X3zmWGS.jpg)
 
