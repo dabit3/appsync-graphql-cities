@@ -11,8 +11,8 @@ import { Icon } from 'react-native-elements'
 import { compose, graphql } from 'react-apollo'
 import uuidV4 from 'uuid/v4'
 
-import AddLocation from './mutations/AddLocation'
-import AllLocation from './queries/AllLocation'
+import CreateLocation from './mutations/CreateLocation'
+import ListLocations from './queries/ListLocations'
 import NewLocationSubscription from './subscriptions/NewLocationSubscription'
 import Input from './Input'
 
@@ -31,7 +31,7 @@ class City extends React.Component {
   }
   state = initialState
   componentWillMount(){
-    this.props.subscribeToNewLocations()
+    // this.props.subscribeToNewLocations()
   }
   toggleModal() {
     this.setState(state => ({ modalVisible: !state.modalVisible }))
@@ -41,7 +41,7 @@ class City extends React.Component {
       [key]: value
     })
   }
-  addLocation() {
+  createLocation() {
     const location = {
       cityId: this.props.navigation.state.params.city.id,
       name: this.state.name,
@@ -99,7 +99,7 @@ class City extends React.Component {
               name='close'
             />
             <Button
-              onPress={this.addLocation.bind(this)}
+              onPress={this.createLocation.bind(this)}
               title={`Add Location to ${this.props.navigation.state.params.city.name}`}
             />
           </View>
@@ -139,22 +139,22 @@ const styles = StyleSheet.create({
 })
 
 export default compose(
-  graphql(AddLocation, {
+  graphql(CreateLocation, {
     props: props => ({
       onAdd: location => props.mutate({
         variables: location,
         optimisticResponse: data => ({
-          putLocation: { ...location,  __typename: 'Location' }
+          createLocation: { ...location,  __typename: 'Location' }
         }),
-        update: (proxy, { data: { putLocation } }) => {
-          const data = proxy.readQuery({ query: AllLocation, variables: { cityId: putLocation.cityId } });
-          data.allLocation.unshift(putLocation);
-          proxy.writeQuery({ query: AllLocation, data, variables: { cityId: putLocation.cityId } });
+        update: (proxy, { data: { createLocation } }) => {
+          const data = proxy.readQuery({ query: ListLocations, variables: { cityId: createLocation.cityId } });
+          data.listLocations.items.unshift(createLocation);
+          proxy.writeQuery({ query: ListLocations, data, variables: { cityId: createLocation.cityId } });
         }
       })
     })
   }),
-  graphql(AllLocation, {
+  graphql(ListLocations, {
     options: props => {
       const { id } = props.navigation.state.params.city
       return {
@@ -163,15 +163,16 @@ export default compose(
       }
     },
     props: props => {
+      console.log('props: ', props)
       return {
-        locations: props.data.allLocation ? props.data.allLocation : [],
+        locations: props.data.listLocations ? props.data.listLocations.items : [],
         subscribeToNewLocations: params => {
           props.data.subscribeToMore({
               document: NewLocationSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { putLocation } } }) => {
+              updateQuery: (prev, { subscriptionData: { data : { createLocation } } }) => {
                 return {
                   ...prev,
-                  allLocation: [putLocation, ...prev.allLocation.filter(location => location.id !== putLocation.id)]
+                  listLocations: [createLocation, ...prev.listLocations.items.filter(location => location.id !== createLocation.id)]
               }
             }
           });
