@@ -11,7 +11,7 @@ import Input from './Input'
 
 import uuidV4 from 'uuid/v4'
 import { compose, graphql } from 'react-apollo'
-import AddCityMutation from './mutations/AddCity'
+import CreateCityMutation from './mutations/CreateCity'
 import ListCities from './queries/ListCities'
 
 const initialState = {
@@ -62,7 +62,7 @@ class AddCity extends Component {
 }
 
 export default compose(
-  graphql(AddCityMutation, {
+  graphql(CreateCityMutation, {
     props: props => ({
       onAdd: city => props.mutate({
         variables: city,
