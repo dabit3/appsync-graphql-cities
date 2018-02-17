@@ -67,25 +67,25 @@ class Cities extends React.Component {
 
 const CitiesWithData = compose(
   graphql(ListCities, {
-      options: {
-        fetchPolicy: 'cache-and-network'
-      },
-      props: (props) => {
-        return {
-          cities: props.data.listCities ? props.data.listCities.items : [],
-          subscribeToNewCities: params => {
-            props.data.subscribeToMore({
-                document: NewCitiesSubscription,
-                updateQuery: (prev, { subscriptionData: { data : { putCity } } }) => {
-                  return {
-                    ...prev,
-                    listCities: [putCity, ...prev.listCities.items.filter(city => city.id !== putCity.id)]
-                }
+    options: {
+      fetchPolicy: 'cache-and-network'
+    },
+    props: (props) => {
+      return {
+        cities: props.data.listCities ? props.data.listCities.items : [],
+        subscribeToNewCities: params => {
+          props.data.subscribeToMore({
+              document: NewCitiesSubscription,
+              updateQuery: (prev, { subscriptionData: { data : { createCity } } }) => {
+                return {
+                  ...prev,
+                  listCities: [createCity, ...prev.listCities.items.filter(city => city.id !== createCity.id)]
               }
-            });
-          }
+            }
+          });
         }
       }
+    }
   })
 )(Cities)
 
