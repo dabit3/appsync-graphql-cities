@@ -4,8 +4,8 @@ export default gql`
 subscription NewLocationSub {
   onCreateLocation {
     id
-		cityId
-		name
-		info
+    cityId
+    name
+    info
   }
 }`;
