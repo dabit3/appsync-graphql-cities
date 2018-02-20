@@ -3,6 +3,8 @@
 This app demonstrates how to integrate React Native & GraphQL using [AppSync](https://aws.amazon.com/appsync/) with optimistic UI and real time subscriptions.
 [AppSync](https://aws.amazon.com/appsync/) is part of [AWS Mobile](https://aws.amazon.com/mobile/)
 
+To view the tutorial for how to build this app, see both [part 1](https://code.tutsplus.com/tutorials/code-an-app-with-graphql-and-react-native--cms-30511) and part two (coming soon) on Tuts Plus.
+
 ![React Native AppSync](https://i.imgur.com/X3zmWGS.jpg)
 
 ### To get started    
