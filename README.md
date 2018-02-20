@@ -162,6 +162,6 @@ schema {
 }
 ```
 
-### LocationsTable index configuration
+### LocationTable index configuration
 
 ![](https://i.imgur.com/W05xPFo.png)
