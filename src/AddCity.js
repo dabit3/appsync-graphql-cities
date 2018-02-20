@@ -66,9 +66,10 @@ export default compose(
     props: props => ({
       onAdd: city => props.mutate({
         variables: city,
-        optimisticResponse: data => ({
+        optimisticResponse: {
+          __typename: 'Mutation',
           createCity: { ...city,  __typename: 'City' }
-        }),
+        },
         update: (proxy, { data: { createCity } }) => {
           const data = proxy.readQuery({ query: ListCities });
           data.listCities.items.unshift(createCity);

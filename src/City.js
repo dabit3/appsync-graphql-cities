@@ -143,9 +143,9 @@ export default compose(
     props: props => ({
       onAdd: location => props.mutate({
         variables: location,
-        optimisticResponse: data => ({
+        optimisticResponse: {
           createLocation: { ...location,  __typename: 'Location' }
-        }),
+        },
         update: (proxy, { data: { createLocation } }) => {
           const data = proxy.readQuery({ query: ListLocations, variables: { cityId: createLocation.cityId } });
           data.listLocations.items.unshift(createLocation);
@@ -167,14 +167,14 @@ export default compose(
         locations: props.data.listLocations ? props.data.listLocations.items : [],
         subscribeToNewLocations: params => {
           props.data.subscribeToMore({
-              document: NewLocationSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { onCreateLocation } } }) => {
-                return {
-                  ...prev,
-                  listLocations: {
-                    items: [onCreateLocation, ...prev.listLocations.items.filter(location => location.id !== onCreateLocation.id)],
-                    __typename: 'LocationConnection'
-                  }
+            document: NewLocationSubscription,
+            updateQuery: (prev, { subscriptionData: { data : { onCreateLocation } } }) => {
+              return {
+                ...prev,
+                listLocations: {
+                  items: [onCreateLocation, ...prev.listLocations.items.filter(location => location.id !== onCreateLocation.id)],
+                  __typename: 'LocationConnection'
+                }
               }
             }
           });

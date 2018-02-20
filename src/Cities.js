@@ -75,14 +75,14 @@ const CitiesWithData = compose(
         cities: props.data.listCities ? props.data.listCities.items : [],
         subscribeToNewCities: params => {
           props.data.subscribeToMore({
-              document: NewCitiesSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { onCreateCity } } }) => {
-                return {
-                  ...prev,
-                  listCities: {
-                    __typename: 'CityConnection',
-                    items: [onCreateCity, ...prev.listCities.items.filter(city => city.id !== onCreateCity.id)]
-                  }
+            document: NewCitiesSubscription,
+            updateQuery: (prev, { subscriptionData: { data : { onCreateCity } } }) => {
+              return {
+                ...prev,
+                listCities: {
+                  __typename: 'CityConnection',
+                  items: [onCreateCity, ...prev.listCities.items.filter(city => city.id !== onCreateCity.id)]
+                }
               }
             }
           });
