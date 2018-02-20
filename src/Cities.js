@@ -37,8 +37,8 @@ class Cities extends React.Component {
       />
     )
   }
-  componentWillMount(){
-    // this.props.subscribeToNewCities();
+  componentDidMount(){
+    this.props.subscribeToNewCities();
   }
   navigate(city) {
     this.props.navigation.navigate('City', { city })
@@ -76,10 +76,13 @@ const CitiesWithData = compose(
         subscribeToNewCities: params => {
           props.data.subscribeToMore({
               document: NewCitiesSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { createCity } } }) => {
+              updateQuery: (prev, { subscriptionData: { data : { onCreateCity } } }) => {
                 return {
                   ...prev,
-                  listCities: [createCity, ...prev.listCities.items.filter(city => city.id !== createCity.id)]
+                  listCities: {
+                    __typename: 'CityConnection',
+                    items: [onCreateCity, ...prev.listCities.items.filter(city => city.id !== onCreateCity.id)]
+                  }
               }
             }
           });

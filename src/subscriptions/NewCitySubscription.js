@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 export default gql`
 subscription NewCitySub {
-  putCity {
+  onCreateCity {
     name
     country
     id

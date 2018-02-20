@@ -31,7 +31,7 @@ class City extends React.Component {
   }
   state = initialState
   componentWillMount(){
-    // this.props.subscribeToNewLocations()
+   this.props.subscribeToNewLocations()
   }
   toggleModal() {
     this.setState(state => ({ modalVisible: !state.modalVisible }))
@@ -163,16 +163,18 @@ export default compose(
       }
     },
     props: props => {
-      console.log('props: ', props)
       return {
         locations: props.data.listLocations ? props.data.listLocations.items : [],
         subscribeToNewLocations: params => {
           props.data.subscribeToMore({
               document: NewLocationSubscription,
-              updateQuery: (prev, { subscriptionData: { data : { createLocation } } }) => {
+              updateQuery: (prev, { subscriptionData: { data : { onCreateLocation } } }) => {
                 return {
                   ...prev,
-                  listLocations: [createLocation, ...prev.listLocations.items.filter(location => location.id !== createLocation.id)]
+                  listLocations: {
+                    items: [onCreateLocation, ...prev.listLocations.items.filter(location => location.id !== onCreateLocation.id)],
+                    __typename: 'LocationConnection'
+                  }
               }
             }
           });

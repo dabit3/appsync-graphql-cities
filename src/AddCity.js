@@ -71,7 +71,6 @@ export default compose(
         }),
         update: (proxy, { data: { createCity } }) => {
           const data = proxy.readQuery({ query: ListCities });
-          console.log('data:' , data)
           data.listCities.items.unshift(createCity);
           proxy.writeQuery({ query: ListCities, data });
         }
