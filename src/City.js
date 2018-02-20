@@ -144,6 +144,7 @@ export default compose(
       onAdd: location => props.mutate({
         variables: location,
         optimisticResponse: {
+          __typename: 'Mutation',
           createLocation: { ...location,  __typename: 'Location' }
         },
         update: (proxy, { data: { createLocation } }) => {
