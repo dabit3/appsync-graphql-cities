@@ -140,6 +140,9 @@ const styles = StyleSheet.create({
 
 export default compose(
   graphql(CreateLocation, {
+    options: {
+      errorPolicy: 'ignore'
+    },
     props: props => ({
       onAdd: location => props.mutate({
         variables: location,

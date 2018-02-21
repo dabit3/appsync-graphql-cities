@@ -7,8 +7,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-appsync": "^1.0.8",
-    "aws-appsync-react": "^1.0.4",
+    "aws-appsync": "^1.0.11",
+    "aws-appsync-react": "^1.0.5",
     "aws-sdk": "^2.190.0",
     "graphql-tag": "^2.7.3",
     "react": "16.2.0",

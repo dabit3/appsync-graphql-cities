@@ -63,6 +63,9 @@ class AddCity extends Component {
 
 export default compose(
   graphql(CreateCityMutation, {
+    options: {
+      errorPolicy: 'ignore'
+    },
     props: props => ({
       onAdd: city => props.mutate({
         variables: city,
